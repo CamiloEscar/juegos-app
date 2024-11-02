@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candy Crush</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff69b4, #9370db);
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 4px solid #fff;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game state
+        const game = {
+            score: 0,
+            isRunning: true,
+            isPaused: false,
+            isMuted: false
+        };
+
+        // Listen for messages from parent frame
+        window.addEventListener('message', (event) => {
+            switch (event.data.type) {
+                case 'GAME_PAUSE':
+                    game.isPaused = true;
+                    break;
+                case 'GAME_RESUME':
+                    game.isPaused = false;
+                    gameLoop();
+                    break;
+                case 'GAME_RESTART':
+                    resetGame();
+                    break;
+                case 'TOGGLE_SOUND':
+                    game.isMuted = event.data.muted;
+                    break;
+            }
+        });
+
+        function resetGame() {
+            game.score = 0;
+            game.isPaused = false;
+            // Reset other game state...
+            gameLoop();
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (game.isRunning && !game.isPaused) {
+                // Update game state
+                // Render game
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
