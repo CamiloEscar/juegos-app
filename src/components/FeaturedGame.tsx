@@ -1,5 +1,5 @@
-"use client"
-import { Play, Star } from 'lucide-react';
+"use client";
+import { Clock, Play, Star } from 'lucide-react';
 import { Game } from '../types/game';
 import { games } from '../data/games';
 import { useState } from 'react';
@@ -22,8 +22,8 @@ export default function FeaturedGame({ game, onSelect, isFavorite, onToggleFavor
       />
       <div className="absolute inset-0 z-20 p-8 flex flex-col justify-end">
         <div className="flex items-center gap-2 mb-4">
-          <Star className="w-6 h-6 text-yellow-400" />
-          <span className="text-yellow-400 font-semibold">Último Juego</span>
+          <Clock className="w-6 h-6 text-yellow-400" />
+          <span className="text-yellow-400 font-semibold">Último Juego Añadido</span>
         </div>
         <h2 className="text-3xl sm:text-4xl font-bold mb-2 group-hover:text-indigo-300 transition-colors">
           {game.title}
@@ -53,20 +53,20 @@ export default function FeaturedGame({ game, onSelect, isFavorite, onToggleFavor
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-// Este es un componente separado que usa FeaturedGame
+// Componente para mostrar el último juego
 export function LatestGame() {
-  const latestGame = games[games.length - 1];
+  const latestGame = games[games.length - 1]; // Selecciona el último juego
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleSelect = () => {
-    window.location.href = latestGame.demoUrl;
+    window.location.href = latestGame.demoUrl; // Redirige al demo del juego
   }
 
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    setIsFavorite(!isFavorite); // Alterna el estado de favorito
   }
 
   return (
@@ -76,5 +76,5 @@ export function LatestGame() {
       isFavorite={isFavorite}
       onToggleFavorite={handleToggleFavorite}
     />
-  )
+  );
 }

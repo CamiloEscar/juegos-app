@@ -1,4 +1,3 @@
-"use client";
 import { Play, Star, Clock, Users, Code2 } from "lucide-react";
 import { Game } from "../types/game";
 
@@ -9,25 +8,11 @@ interface GameCardProps {
   onToggleFavorite: () => void;
 }
 
-function GameCard({
-  game,
-  onSelect,
-  isFavorite,
-  onToggleFavorite,
-}: GameCardProps) {
-  const handleCardClick = () => {
-    onSelect();
-  };
-
+export default function GameCard({ game, onSelect, isFavorite, onToggleFavorite }: GameCardProps) {
   return (
-    <div
-      onClick={handleCardClick}
-      className="group relative bg-gradient-to-b from-white/[0.08] to-transparent rounded-xl overflow-hidden hover:scale-[1.02] transition-all duration-300 border border-white/10 cursor-pointer"
-    >
-      {/* Hover effect background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div className="group relative bg-gradient-to-b from-white/[0.08] to-transparent rounded-xl overflow-hidden hover:scale-[1.02] transition-all duration-300 border border-white/10">
+      
 
-      {/* Favorite button (top-right) */}
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -45,7 +30,6 @@ function GameCard({
         />
       </button>
 
-      {/* Image container */}
       <div className="relative aspect-[16/10] overflow-hidden">
         <img
           src={game.image}
@@ -54,7 +38,6 @@ function GameCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
-        {/* Game metadata overlay */}
         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white/90 px-2.5 py-1 rounded-full text-xs font-medium">
@@ -70,7 +53,6 @@ function GameCard({
       </div>
 
       <div className="p-5">
-        {/* Title and description */}
         <div className="mb-4">
           <h3 className="text-lg font-bold mb-1 text-white group-hover:text-purple-400 transition-colors line-clamp-1">
             {game.title}
@@ -80,7 +62,6 @@ function GameCard({
           </p>
         </div>
 
-        {/* Tech tags */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/20">
             {game.category}
@@ -95,7 +76,6 @@ function GameCard({
           ))}
         </div>
 
-        {/* Action buttons */}
         <div className="flex gap-2">
           <button
             onClick={(e) => {
@@ -108,7 +88,7 @@ function GameCard({
             Jugar Ahora
           </button>
 
-          {game.sourceUrl && game.sourceUrl !== "#" && (
+          {game.sourceUrl && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -124,5 +104,3 @@ function GameCard({
     </div>
   );
 }
-
-export default GameCard;

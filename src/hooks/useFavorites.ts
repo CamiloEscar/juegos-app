@@ -1,32 +1,27 @@
 import { useState, useEffect } from 'react';
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<number[]>(() => {
-    try {
-      const saved = localStorage.getItem('gameFavorites');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('gameFavorites', JSON.stringify(favorites));
-    } catch (error) {
-      console.error('Failed to save favorites:', error);
+    const storedFavorites = localStorage.getItem('favorites');
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
     }
-  }, [favorites]);
+  }, []);
 
-  const toggleFavorite = (gameId: number) => {
-    setFavorites(prev => 
-      prev.includes(gameId)
-        ? prev.filter(id => id !== gameId)
-        : [...prev, gameId]
-    );
+  const toggleFavorite = (gameId: string) => {
+    setFavorites((prevFavorites) => {
+      const newFavorites = prevFavorites.includes(gameId)
+        ? prevFavorites.filter((id) => id !== gameId)
+        : [...prevFavorites, gameId];
+      
+      localStorage.setItem('favorites', JSON.stringify(newFavorites));
+      return newFavorites;
+    });
   };
 
-  const isFavorite = (gameId: number) => favorites.includes(gameId);
+  const isFavorite = (gameId: string) => favorites.includes(gameId);
 
   return { favorites, toggleFavorite, isFavorite };
 }

@@ -1,75 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <title>Juego de la Vibora</title>
     <style>
         body {
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: #001;
+            height: 100vh;
+            margin: 0;
+            background-color: #222;
+            color: white;
             font-family: Arial, sans-serif;
         }
-        canvas {
-            border: 2px solid #334;
-            background: #112;
+        #gameCanvas {
+            border: 2px solid white;
+            background-color: #444;
+        }
+        h1 {
+            position: absolute;
+            top: 20px;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <h1>Juego de la Vibora</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Game state
-        const game = {
-            score: 0,
-            isRunning: true,
-            isPaused: false,
-            isMuted: false
+        const box = 20; // Tamaño de cada segmento de la serpiente
+        let snake = [{ x: 9 * box, y: 9 * box }]; // Posición inicial de la serpiente
+        let direction = 'RIGHT';
+        let food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box,
         };
+        let score = 0;
 
-        // Listen for messages from parent frame
-        window.addEventListener('message', (event) => {
-            switch (event.data.type) {
-                case 'GAME_PAUSE':
-                    game.isPaused = true;
-                    break;
-                case 'GAME_RESUME':
-                    game.isPaused = false;
-                    gameLoop();
-                    break;
-                case 'GAME_RESTART':
-                    resetGame();
-                    break;
-                case 'TOGGLE_SOUND':
-                    game.isMuted = event.data.muted;
-                    break;
-            }
-        });
+        document.addEventListener('keydown', changeDirection);
 
-        function resetGame() {
-            game.score = 0;
-            game.isPaused = false;
-            // Reset other game state...
-            gameLoop();
-        }
-
-        // Game loop
-        function gameLoop() {
-            if (game.isRunning && !game.isPaused) {
-                // Update game state
-                // Render game
-                requestAnimationFrame(gameLoop);
+        function changeDirection(event) {
+            if (event.keyCode === 37 && direction !== 'RIGHT') {
+                direction = 'LEFT';
+            } else if (event.keyCode === 38 && direction !== 'DOWN') {
+                direction = 'UP';
+            } else if (event.keyCode === 39 && direction !== 'LEFT') {
+                direction = 'RIGHT';
+            } else if (event.keyCode === 40 && direction !== 'UP') {
+                direction = 'DOWN';
             }
         }
 
-        gameLoop();
+        function collision(head, array) {
+            for (let i = 1; i < array.length; i++) {
+                if (head.x === array[i].x && head.y === array[i].y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = (i === 0) ? 'green' : 'lime';
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = 'white';
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x, food.y, box, box);
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (direction === 'LEFT') snakeX -= box;
+            if (direction === 'UP') snakeY -= box;
+            if (direction === 'RIGHT') snakeX += box;
+            if (direction === 'DOWN') snakeY += box;
+
+            if (snakeX === food.x && snakeY === food.y) {
+                score++;
+                food = {
+                    x: Math.floor(Math.random() * 20) * box,
+                    y: Math.floor(Math.random() * 20) * box,
+                };
+            } else {
+                snake.pop(); // Elimina el último segmento
+            }
+
+            const newHead = { x: snakeX, y: snakeY };
+
+            if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height || collision(newHead, snake)) {
+                clearInterval(game);
+                alert('Game Over! Tu puntaje: ' + score);
+                document.location.reload();
+            }
+
+            snake.unshift(newHead); // Agrega un nuevo segmento en la cabeza
+        }
+
+        const game = setInterval(draw, 100);
     </script>
 </body>
 </html>
